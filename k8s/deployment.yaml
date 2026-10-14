@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: api
     app.kubernetes.io/part-of: shipfast
 spec:
-  replicas: 2
+  replicas: 3
   revisionHistoryLimit: 5
   # Selector is immutable after creation - keep it to the one stable label.
   selector:
