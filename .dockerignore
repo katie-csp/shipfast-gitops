@@ -1,0 +1,5 @@
+# Allow-list: ignore everything, then include only what the image needs.
+# New files (secrets, notes, venvs) are excluded by default.
+*
+!app/app.py
+!app/requirements.txt

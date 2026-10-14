@@ -1,0 +1,35 @@
+# Argo CD Application: tells Argo CD what to deploy (k8s/ on main) and where (shipfast namespace).
+# Kept outside k8s/ so Argo CD does not try to manage its own definition.
+# Apply once with: kubectl apply -f argocd/application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shipfast-status
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: shipfast
+  # Deleting this Application also deletes the resources it deployed.
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/katie-csp/shipfast-gitops.git
+    targetRevision: main
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: shipfast
+  syncPolicy:
+    automated:
+      prune: true     # delete resources that were removed from git
+      selfHeal: true  # revert manual kubectl changes back to what git says
+    syncOptions:
+      - PruneLast=true  # remove old resources only after new ones are healthy
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 10

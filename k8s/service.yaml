@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipfast-status
+  namespace: shipfast
+  labels:
+    app.kubernetes.io/name: shipfast-status
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: shipfast
+spec:
+  type: ClusterIP
+  # Must match the Deployment's pod labels.
+  selector:
+    app.kubernetes.io/name: shipfast-status
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80          # port clients inside the cluster use
+      targetPort: http  # named container port (8080)
